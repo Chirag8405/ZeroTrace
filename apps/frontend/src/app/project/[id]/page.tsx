@@ -76,9 +76,9 @@ export default function ProjectDetailPage() {
 
     const fundingPercent = project
         ? Math.min(
-              (parseFloat(project.currentFunding || "0") / parseFloat(project.requestedFunding || "1")) * 100,
-              100
-          )
+            (parseFloat(project.currentFunding || "0") / parseFloat(project.requestedFunding || "1")) * 100,
+            100
+        )
         : 0;
 
     return (
@@ -198,16 +198,16 @@ export default function ProjectDetailPage() {
                                                             </p>
                                                             {milestone.deliverables && milestone.deliverables.length > 0 &&
                                                                 milestone.deliverables.some((d) => d !== milestone.description) && (
-                                                                <div className="flex flex-wrap gap-1.5 pt-1">
-                                                                    {milestone.deliverables
-                                                                        .filter((d) => d !== milestone.description)
-                                                                        .map((d, j) => (
-                                                                            <Badge key={j} variant="outline" className="text-xs max-w-full truncate">
-                                                                                {d}
-                                                                            </Badge>
-                                                                        ))}
-                                                                </div>
-                                                            )}
+                                                                    <div className="flex flex-wrap gap-1.5 pt-1">
+                                                                        {milestone.deliverables
+                                                                            .filter((d) => d !== milestone.description)
+                                                                            .map((d, j) => (
+                                                                                <Badge key={j} variant="outline" className="text-xs max-w-full truncate">
+                                                                                    {d}
+                                                                                </Badge>
+                                                                            ))}
+                                                                    </div>
+                                                                )}
                                                         </div>
                                                     ))}
                                                 </div>
