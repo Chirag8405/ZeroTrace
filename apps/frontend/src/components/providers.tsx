@@ -1,25 +1,12 @@
 "use client";
 
-import {
-  darkTheme,
-  lightTheme,
-  getDefaultConfig,
-  RainbowKitProvider,
-} from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
+import { getConfig } from "@/lib/wagmi";
 import "@rainbow-me/rainbowkit/styles.css";
+import { useState, useEffect } from "react";
 import { ThemeProvider, useTheme } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { mainnet, sepolia, polygon, optimism, arbitrum, base } from "wagmi/chains";
-
-const config = getDefaultConfig({
-  ssr: true,
-  appName: "ZeroTrace",
-  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
-  chains: [mainnet, sepolia, polygon, optimism, arbitrum, base],
-});
-
-const queryClient = new QueryClient();
+import { darkTheme, lightTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 
 function RainbowKitWithTheme({ children }: { children: React.ReactNode }) {
   const { resolvedTheme } = useTheme();
@@ -32,6 +19,19 @@ function RainbowKitWithTheme({ children }: { children: React.ReactNode }) {
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false);
+  const [queryClient] = useState(() => new QueryClient());
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  const config = getConfig();
+
   return (
     <ThemeProvider enableSystem attribute="class" defaultTheme="system" disableTransitionOnChange>
       <WagmiProvider config={config}>
