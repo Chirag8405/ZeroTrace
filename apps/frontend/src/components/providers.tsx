@@ -5,6 +5,7 @@ import { getConfig } from "@/lib/wagmi";
 import "@rainbow-me/rainbowkit/styles.css";
 import { useState, useEffect } from "react";
 import { ThemeProvider, useTheme } from "next-themes";
+import { AnonAadhaarProvider } from "@anon-aadhaar/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { darkTheme, lightTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 
@@ -36,7 +37,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <ThemeProvider enableSystem attribute="class" defaultTheme="system" disableTransitionOnChange>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <RainbowKitWithTheme>{children}</RainbowKitWithTheme>
+          <AnonAadhaarProvider _useTestAadhaar={true}>
+            <RainbowKitWithTheme>{children}</RainbowKitWithTheme>
+          </AnonAadhaarProvider>
         </QueryClientProvider>
       </WagmiProvider>
     </ThemeProvider>
