@@ -13,6 +13,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -25,7 +26,7 @@ export default function Home() {
       <nav className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
-            <Shield className="h-6 w-6" />
+            <Image src="/logo.svg" alt="ZeroTrace Logo" width={32} height={32} className="h-8 w-8" />
             <span className="text-xl font-bold">ZeroTrace</span>
           </div>
           <div className="flex items-center gap-4">
@@ -367,7 +368,7 @@ export default function Home() {
       <footer className="border-t py-8">
         <div className="container flex flex-col items-center justify-between gap-4 md:flex-row">
           <div className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
+            <Image src="/logo.svg" alt="ZeroTrace Logo" width={24} height={24} className="h-6 w-6" />
             <span className="text-sm font-semibold">ZeroTrace</span>
           </div>
           <p className="text-sm text-muted-foreground">
