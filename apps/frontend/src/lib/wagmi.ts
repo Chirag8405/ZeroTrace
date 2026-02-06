@@ -1,15 +1,22 @@
+import type { Config } from "wagmi";
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { mainnet, sepolia, polygon, optimism, arbitrum, base } from "wagmi/chains";
 
-export const config = getDefaultConfig({
-  appName: "ZeroTrace",
-  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "YOUR_PROJECT_ID",
-  chains: [mainnet, sepolia, polygon, optimism, arbitrum, base],
-  ssr: true,
-});
+let configCache: Config | undefined;
 
-declare module "wagmi" {
-  interface Register {
-    config: typeof config;
+export const getConfig = () => {
+  if (typeof window === "undefined") {
+    throw new Error("Config can only be created on the client side");
   }
-}
+
+  if (!configCache) {
+    configCache = getDefaultConfig({
+      ssr: false,
+      appName: "ZeroTrace",
+      projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
+      chains: [mainnet, sepolia, polygon, optimism, arbitrum, base],
+    });
+  }
+
+  return configCache;
+};
