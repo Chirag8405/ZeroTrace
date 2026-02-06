@@ -7,7 +7,11 @@ const nextConfig: NextConfig = {
       ...config.resolve.fallback,
       "@react-native-async-storage/async-storage": false,
       "pino-pretty": false,
+      fs: false,
+      net: false,
+      tls: false,
     };
+    config.externals.push("pino-pretty", "lokijs", "encoding");
     return config;
   },
 };
