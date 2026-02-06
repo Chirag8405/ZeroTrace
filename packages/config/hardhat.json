@@ -9,6 +9,6 @@
     "module": "CommonJS",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "moduleResolution": "Node"
+    "moduleResolution": "node16"
   }
 }
