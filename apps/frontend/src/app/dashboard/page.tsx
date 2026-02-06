@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Shield, Home, CheckCircle2, Vote, Users, Coins } from "lucide-react";
+import { Shield, Home, CheckCircle2, Vote, Users, Coins, Rocket, FolderKanban } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -142,6 +142,54 @@ export default function Dashboard() {
                 <CardContent>
                   <p className="text-3xl font-bold">{totalVoters?.toString() || "0"}</p>
                   <p className="text-sm text-muted-foreground">Registered voters</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Rocket className="h-5 w-5" />
+                    Submit Your Project
+                  </CardTitle>
+                  <CardDescription>
+                    Request funding for your public goods project
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Have a project idea that benefits the ecosystem? Submit your proposal and get funded through quadratic funding.
+                  </p>
+                  <Link href="/dashboard/submit-project">
+                    <Button className="w-full gap-2">
+                      <Rocket className="h-4 w-4" />
+                      Submit Project Proposal
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FolderKanban className="h-5 w-5" />
+                    Browse Projects
+                  </CardTitle>
+                  <CardDescription>
+                    Discover and support public goods projects
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Explore active projects seeking funding and contribute to the ones that matter to you.
+                  </p>
+                  <Link href="/dashboard/projects">
+                    <Button variant="outline" className="w-full gap-2">
+                      <FolderKanban className="h-4 w-4" />
+                      View All Projects
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             </div>
