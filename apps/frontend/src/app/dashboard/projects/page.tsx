@@ -305,9 +305,11 @@ export default function ProjectsPage() {
                                             {/* Category Badge */}
                                             <div className="flex items-center justify-between">
                                                 <Badge variant="outline">{project.category}</Badge>
-                                                <Button variant="secondary" size="sm">
-                                                    View Details →
-                                                </Button>
+                                                <Link href={`/project/${project.id}`}>
+                                                    <Button variant="secondary" size="sm">
+                                                        View Details →
+                                                    </Button>
+                                                </Link>
                                             </div>
                                         </div>
                                     </CardContent>
