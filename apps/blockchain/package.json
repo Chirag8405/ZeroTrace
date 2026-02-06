@@ -1,0 +1,22 @@
+{
+  "name": "@zerotrace/blockchain",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Smart contracts for ZeroTrace quadratic funding platform",
+  "scripts": {
+    "build": "hardhat compile",
+    "clean": "hardhat clean",
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/deploy.ts",
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "@types/node": "^22.19.8",
+    "hardhat": "^3.1.6",
+    "typescript": "~5.8.3"
+  }
+}

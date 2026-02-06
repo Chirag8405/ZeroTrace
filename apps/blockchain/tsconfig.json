@@ -1,0 +1,9 @@
+{
+  "extends": "@zerotrace/typescript-config/hardhat.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "."
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
