@@ -92,6 +92,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.90.20
         version: 5.90.20(react@19.2.3)
+      '@types/snarkjs':
+        specifier: ^0.7.9
+        version: 0.7.9
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -116,6 +119,9 @@ importers:
       react-dom:
         specifier: 19.2.3
         version: 19.2.3(react@19.2.3)
+      snarkjs:
+        specifier: ^0.7.4
+        version: 0.7.6
       tailwind-merge:
         specifier: ^3.4.0
         version: 3.4.0
