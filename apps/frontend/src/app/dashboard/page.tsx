@@ -1,14 +1,74 @@
 "use client";
 
 import Link from "next/link";
-import { Shield, Home } from "lucide-react";
+import { Shield, Home, CheckCircle2, Vote, Users, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { ProtectedRoute } from "@/components/protected-route";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useAccount, useReadContract } from "wagmi";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { VOTER_REGISTRY_ADDRESS, VOTER_REGISTRY_ABI } from "@/contracts";
 
 export default function Dashboard() {
+  const router = useRouter();
+  const { address } = useAccount();
+  const [storedNullifier, setStoredNullifier] = useState<string | null>(null);
+  const [hasCheckedStorage, setHasCheckedStorage] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("user_nullifier");
+      setStoredNullifier(saved);
+      setHasCheckedStorage(true);
+    }
+  }, []);
+
+  const { data: isRegistered, isLoading: isLoadingRegistration } = useReadContract({
+    address: VOTER_REGISTRY_ADDRESS,
+    abi: VOTER_REGISTRY_ABI,
+    functionName: "isNullifierUsed",
+    args: storedNullifier ? [BigInt(storedNullifier)] : undefined,
+  });
+
+  const { data: nullifierData, isLoading: isLoadingVoterData } = useReadContract({
+    address: VOTER_REGISTRY_ADDRESS,
+    abi: VOTER_REGISTRY_ABI,
+    functionName: "getNullifierData",
+    args: storedNullifier ? [BigInt(storedNullifier)] : undefined,
+  });
+
+  const { data: totalVoters } = useReadContract({
+    address: VOTER_REGISTRY_ADDRESS,
+    abi: VOTER_REGISTRY_ABI,
+    functionName: "getTotalRegisteredVoters",
+  });
+
+  useEffect(() => {
+    if (hasCheckedStorage && (!storedNullifier || (!isLoadingRegistration && !isRegistered))) {
+      router.push("/register");
+    }
+  }, [hasCheckedStorage, isRegistered, isLoadingRegistration, storedNullifier, router]);
+
+  if (isLoadingRegistration || isLoadingVoterData || !isRegistered || !nullifierData) {
+    return (
+      <ProtectedRoute>
+        <div className="min-h-screen max-w-7xl mx-auto bg-background flex items-center justify-center">
+          <div className="text-center">
+            <Shield className="mx-auto h-16 w-16 text-primary animate-pulse" />
+            <p className="mt-4 text-muted-foreground">Loading voter data...</p>
+          </div>
+        </div>
+      </ProtectedRoute>
+    );
+  }
+
+  const [registeredAt] = nullifierData as [bigint, boolean];
+  const voiceCredits = BigInt(100); // INITIAL_VOICE_CREDITS constant from contract
+
   return (
     <ProtectedRoute>
       <div className="min-h-screen max-w-7xl mx-auto bg-background">
@@ -32,53 +92,124 @@ export default function Dashboard() {
         </nav>
 
         <main className="container py-20">
-          <div className="flex min-h-[calc(100vh-12rem)] flex-col items-center justify-center gap-8">
-            <Card className="w-full max-w-2xl border-2">
-              <CardHeader className="text-center">
-                <CardTitle className="text-3xl">Dashboard</CardTitle>
-                <CardDescription className="text-base">
-                  Welcome to ZeroTrace Platform
+          <div className="flex min-h-[calc(100vh-12rem)] flex-col gap-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-4xl font-bold">Dashboard</h1>
+                <p className="text-muted-foreground mt-2">Welcome to ZeroTrace Platform</p>
+              </div>
+              <Badge variant="outline" className="gap-2 px-4 py-2">
+                <CheckCircle2 className="h-4 w-4 text-green-500" />
+                Verified Voter
+              </Badge>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <CheckCircle2 className="h-5 w-5 text-green-500" />
+                    Registration Status
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Registered on {new Date(Number(registeredAt) * 1000).toLocaleDateString()}
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Coins className="h-5 w-5" />
+                    Voice Credits
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-3xl font-bold">{voiceCredits.toString()}</p>
+                  <p className="text-sm text-muted-foreground">Available for voting</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Users className="h-5 w-5" />
+                    Total Voters
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-3xl font-bold">{totalVoters?.toString() || "0"}</p>
+                  <p className="text-sm text-muted-foreground">Registered voters</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card className="border-2">
+              <CardHeader>
+                <CardTitle>Your Voter Identity</CardTitle>
+                <CardDescription>
+                  Your verified identity secured with zero-knowledge proofs
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="rounded-lg border-2 border-dashed p-12 text-center">
-                  <Shield className="mx-auto h-16 w-16 text-muted-foreground" />
-                  <h3 className="mt-4 text-xl font-semibold">Coming Soon</h3>
-                  <p className="mt-2 text-muted-foreground">
-                    The dashboard functionality is under development. Stay tuned for updates!
-                  </p>
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="rounded-lg border p-4">
+                    <h4 className="font-semibold text-sm mb-2">Wallet Address</h4>
+                    <p className="text-sm text-muted-foreground font-mono">
+                      {address?.slice(0, 10)}...{address?.slice(-8)}
+                    </p>
+                  </div>
+                  <div className="rounded-lg border p-4">
+                    <h4 className="font-semibold text-sm mb-2">Verification Status</h4>
+                    <Badge variant="outline" className="gap-2">
+                      <CheckCircle2 className="h-3 w-3 text-green-500" />
+                      Anon Aadhaar Verified
+                    </Badge>
+                  </div>
+                  <div className="rounded-lg border p-4 md:col-span-2">
+                    <h4 className="font-semibold text-sm mb-2">Nullifier (Anonymous ID)</h4>
+                    <p className="text-sm text-muted-foreground font-mono break-all">
+                      {storedNullifier ? `${storedNullifier.slice(0, 20)}...${storedNullifier.slice(-20)}` : "N/A"}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="space-y-4">
-                  <h4 className="font-semibold">Upcoming Features:</h4>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li className="flex gap-2">
-                      <span>•</span>
-                      <span>Voter Registration with Anon Aadhaar</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <span>•</span>
-                      <span>Browse Active Funding Rounds</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <span>•</span>
-                      <span>Submit Project Proposals</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <span>•</span>
-                      <span>Anonymous Voting Interface</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <span>•</span>
-                      <span>View Voting Results & Fund Distribution</span>
-                    </li>
+                <div className="rounded-lg bg-muted/50 p-4">
+                  <h4 className="font-semibold text-sm mb-2">Privacy Guarantees</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>✓ Your votes are completely anonymous</li>
+                    <li>✓ No one can link your wallet to your real identity</li>
+                    <li>✓ Sybil-resistant through Anon Aadhaar</li>
+                    <li>✓ One person = One vote set</li>
                   </ul>
                 </div>
 
-                <div className="flex justify-center pt-4">
-                  <Link href="/">
-                    <Button variant="outline">Back to Home</Button>
-                  </Link>
+                <div className="rounded-lg border p-4">
+                  <h4 className="font-semibold text-sm mb-2">On-Chain Verification</h4>
+                  <p className="text-xs text-muted-foreground font-mono break-all">
+                    Contract: {VOTER_REGISTRY_ADDRESS}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Vote className="h-5 w-5" />
+                  Funding Rounds
+                </CardTitle>
+                <CardDescription>Participate in quadratic funding rounds</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-lg border-2 border-dashed p-12 text-center">
+                  <Vote className="mx-auto h-16 w-16 text-muted-foreground" />
+                  <h3 className="mt-4 text-xl font-semibold">No Active Rounds</h3>
+                  <p className="mt-2 text-muted-foreground">
+                    There are currently no active funding rounds. Check back later!
+                  </p>
                 </div>
               </CardContent>
             </Card>
