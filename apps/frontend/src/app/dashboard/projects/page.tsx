@@ -20,7 +20,7 @@ export default function ProjectsPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("all");
     const [statusFilter, setStatusFilter] = useState("all");
-    const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
+    const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
 
     // Read all projects from contract
     const { data: allProjectsData, isLoading } = useReadContract({
@@ -224,21 +224,21 @@ export default function ProjectsPage() {
                             </CardContent>
                         </Card>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {filteredProjects.map((project) => (
                                 <Card
                                     key={project.id}
-                                    className="border-2 hover:shadow-lg transition-shadow cursor-pointer overflow-hidden flex flex-col"
+                                    className="border-2 pt-0 hover:shadow-lg transition-shadow cursor-pointer overflow-hidden flex flex-col"
                                 >
-                                    <div className="h-48 w-full overflow-hidden bg-gradient-to-br from-primary/10 to-primary/30 flex items-center justify-center">
-                                        {project.imageUrl && !imageErrors.has(project.id) ? (
+                                    <div className="h-full w-full overflow-hidden bg-gradient-to-br from-primary/10 to-primary/30 flex items-center justify-center">
+                                        {project.imageUrl && !imageErrors.has(String(project.id)) ? (
                                             <img
                                                 src={project.imageUrl}
                                                 alt={project.title}
-                                                className="w-full h-full object-cover"
+                                                className="w-full h-full "
                                                 onError={() => {
                                                     console.log(`Failed to load image for project ${project.id}:`, project.imageUrl);
-                                                    setImageErrors(prev => new Set(prev).add(project.id));
+                                                    setImageErrors(prev => new Set(prev).add(String(project.id)));
                                                 }}
                                             />
                                         ) : (
@@ -305,7 +305,7 @@ export default function ProjectsPage() {
                                             {/* Category Badge */}
                                             <div className="flex items-center justify-between">
                                                 <Badge variant="outline">{project.category}</Badge>
-                                                <Button variant="ghost" size="sm">
+                                                <Button variant="secondary" size="sm">
                                                     View Details →
                                                 </Button>
                                             </div>
