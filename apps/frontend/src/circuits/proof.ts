@@ -57,16 +57,27 @@ export class ProofGenerator {
       this.zkeyPath
     );
 
+    console.log('🔬 Raw publicSignals from circuit:', publicSignals);
+    console.log('📊 Mapped values:', {
+      '[0] root': publicSignals[0],
+      '[1] nullifierHash': publicSignals[1],
+      '[2] signalHash': publicSignals[2],
+      '[3] roundId': publicSignals[3],
+      '[4] projectId': publicSignals[4],
+      '[5] voteCount': publicSignals[5],
+      '[6] externalNullifier': publicSignals[6],
+    });
+
     return {
       proof,
       publicSignals: {
         root: publicSignals[0],
         nullifierHash: publicSignals[1],
         signalHash: publicSignals[2],
-        externalNullifier: publicSignals[3],
-        roundId: publicSignals[4],
-        projectId: publicSignals[5],
-        voteCount: publicSignals[6],
+        roundId: publicSignals[3],
+        projectId: publicSignals[4],
+        voteCount: publicSignals[5],
+        externalNullifier: publicSignals[6],
       },
     };
   }
