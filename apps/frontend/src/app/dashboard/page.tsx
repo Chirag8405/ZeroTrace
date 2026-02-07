@@ -28,7 +28,7 @@ export default function Dashboard() {
     functionName: "admin",
   });
 
-  const isAdmin = address?.toLowerCase() === adminAddress?.toLowerCase();
+  const isAdmin = address?.toLowerCase() === (adminAddress as string | undefined)?.toLowerCase();
 
   // Debug: Log admin check
   useEffect(() => {
