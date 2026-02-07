@@ -13,7 +13,8 @@ export async function uploadToIPFS(data: object): Promise<string> {
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.error || "Failed to upload to IPFS");
+            console.error("IPFS upload failed:", response.status, errorData);
+            throw new Error(errorData.error || `Failed to upload to IPFS (${response.status})`);
         }
 
         const result = await response.json();
@@ -55,7 +56,8 @@ export async function uploadImageToIPFS(file: File): Promise<string> {
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.error || "Failed to upload image");
+            console.error("Image upload failed:", response.status, errorData);
+            throw new Error(errorData.error || `Failed to upload image (${response.status})`);
         }
 
         const result = await response.json();

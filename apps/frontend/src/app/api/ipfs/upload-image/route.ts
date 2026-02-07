@@ -4,8 +4,9 @@ const PINATA_JWT = process.env.PINATA_JWT;
 
 export async function POST(request: NextRequest) {
   if (!PINATA_JWT) {
+    console.error("PINATA_JWT environment variable is not set");
     return NextResponse.json(
-      { error: "IPFS service not configured" },
+      { error: "IPFS service not configured — PINATA_JWT env var is missing" },
       { status: 500 }
     );
   }
