@@ -73,6 +73,7 @@ export default function Dashboard() {
     abi: VotingABI.abi,
     functionName: "voterCreditsPerRound",
     args: [address, 1n], // roundId = 1
+    query: { refetchOnMount: 'always' as const },
   });
 
   useEffect(() => {
@@ -98,8 +99,8 @@ export default function Dashboard() {
   
   // Get actual available credits from contract
   let voiceCredits = BigInt(100); // Default INITIAL_VOICE_CREDITS
-  if (voterCreditsData && Array.isArray(voterCreditsData) && voterCreditsData.length >= 3) {
-    voiceCredits = voterCreditsData[2]; // availableCredits is the 3rd element
+  if (voterCreditsData && Array.isArray(voterCreditsData) && voterCreditsData.length >= 3 && BigInt(voterCreditsData[0] as bigint) > 0n) {
+    voiceCredits = voterCreditsData[2] as bigint; // availableCredits is the 3rd element
   }
 
   return (
